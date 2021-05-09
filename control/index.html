@@ -1,0 +1,83 @@
+<!DOCTYPE HTML>
+<!--
+ The MIT License (MIT)
+
+ This file is part of the JoyStick Project (https://github.com/bobboteck/JoyStick).
+ Copyright (c) 2015 Roberto D'Amico (Bobboteck).
+
+ Permission is hereby granted, free of charge, to any person obtaining a copy
+ of this software and associated documentation files (the "Software"), to deal
+ in the Software without restriction, including without limitation the rights
+ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ copies of the Software, and to permit persons to whom the Software is
+ furnished to do so, subject to the following conditions:
+ 
+ The above copyright notice and this permission notice shall be included in all
+ copies or substantial portions of the Software.
+
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+-->
+<html>
+	<head>
+		<title>Joy</title>
+		<meta charset="utf-8">
+		<meta name="description" content="Example page of use pure Javascript JoyStick">
+		<meta name="author" content="Stephen Maurer">
+		
+		<link rel="stylesheet" href="css/style.css">
+		<style>
+
+		</style>
+		<script src="js/joy.js"></script>
+	</head>
+	<body>
+
+		<!-- Example of two JoyStick integrated in the page structure -->
+		<div class="row">
+			
+			<div class="columnLateral">
+				<div id="joy1Div" style="width:200px;height:200px;margin:50px"></div>
+				Direction:<input id="joy1Direzione" type="text" /><br />
+				Pan Speed :<input id="joy1X" type="text" /></br>
+				Tilt Speed :<input id="joy1Y" type="text" />
+			</div>
+					
+			<div class="columnLateral">
+				<!--
+				<button onmousedown="zoom_tele()" onmouseup="zoom_stop()">Tele</button>
+				<button onmousedown="zoom_wide()" onmouseup="zoom_stop()">Wide</button>
+				<button onclick="set_preset(1)">Set Rostrum</button>
+				<button onclick="set_preset(2)">Set Full Wide</button>
+				<button onclick="set_preset(3)">Set Stage</button>
+				<button onclick="set_preset(4)">Set Stage Left</button>
+                                <button onclick="set_preset(5)">Set Stage Right</button>
+                                
+<button onclick="set_preset(6)">Set Rostrum Left</button>
+
+				<button onclick="set_preset(7)">Set Rostrum Right</button>
+                                <button onclick="set_preset(8)">Set Hall Medium</button>
+                                <button onclick="set_preset(9)">Set Weddings</button>
+                                -->
+				<button onclick="preset(1)">Recall Rostrum</button>
+                                <button onclick="preset(2)">Recall Full Wide</button>
+                                <button onclick="preset(3)">Recall Stage</button>
+				<button onclick="preset(4)">Recall Stage Left</button>
+                                <button onclick="preset(5)">Recall Stage Right</button>
+                                <button onclick="preset(6)">Recall Rostrum Left</button>
+                                <button onclick="preset(7)">Recall Rostrum Right</button>
+                                <button onclick="preset(8)">Recall Hall Medium</button>
+                                <button onclick="preset(9)">Recall Baptism</button>
+			</div>
+			
+			
+		</div>
+		<script type="text/javascript" src="js/ptz.js"></script>
+		
+</body>
+</html>
