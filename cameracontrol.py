@@ -6,6 +6,18 @@ import asyncio
 import websockets
 import json
 
+import PyATEMMax
+
+
+class AtemSwitcher(object):
+    def __init__(self, atem_ip):
+        self.switcher = PyATEMMax.ATEMMax()
+        self.switcher.connect(atem_ip)
+        self.switcher.waitForConnection()
+    
+    def input(self, video_in):
+        self.switcher.setProgramInputVideoSource(0,video_in)
+
 class ViscaCamera(object):
    def __init__(self, camera_ip, camera_port):
       self.camera_ip = camera_ip
@@ -87,13 +99,16 @@ class ViscaCamera(object):
       return self.sequence_number
 
    def send_message(self, message_string): 
-      payload_type = bytearray.fromhex('01 00')
-      payload = bytearray.fromhex(message_string)
-      payload_length = len(payload).to_bytes(2, 'big')
-      message = payload_type + payload_length + self.sequence_number.to_bytes(4, 'big') + payload
-      self.sequence_number += 1
-      self.socket.sendto(message, (self.camera_ip, self.camera_port))
-      return True
+      try:
+          payload_type = bytearray.fromhex('01 00')
+          payload = bytearray.fromhex(message_string)
+          payload_length = len(payload).to_bytes(2, 'big')
+          message = payload_type + payload_length + self.sequence_number.to_bytes(4, 'big') + payload
+          self.sequence_number += 1
+          self.socket.sendto(message, (self.camera_ip, self.camera_port))
+          return True
+      except:
+          return False
 
    def recall_memory(self, memory_number):
       self.send_message(self.information_display_off) # otherwise we see a message on the camera output
@@ -108,7 +123,6 @@ class ViscaCamera(object):
       message_string = self.memory_set.replace('p', str(memory_number))
       message = self.send_message(message_string)
       return message
-
 
 
 
@@ -132,10 +146,15 @@ async def hello(websocket, path):
                 print("Camera Set %s" % command["value"])
                 camera.set_memory(command["value"])
             elif command["type"] == "fixed":
+               print(command)
                visca_command = getattr(camera,command["command"])
                print(visca_command)
                camera.send_message(visca_command)
+            elif command["type"] == "switcher":
+               print(command)
+               switcher.input(command["input"])
             else:
+               print(command)
                visca_command = getattr(camera,command["type"]) % (str(command["pan_speed"]).zfill(2), str(command["tilt_speed"]).zfill(2))
                print(visca_command)
                camera.send_message(visca_command)
@@ -147,10 +166,10 @@ async def hello(websocket, path):
       
 
 camera = ViscaCamera('192.168.1.28',1259)
-
+switcher = AtemSwitcher('192.168.1.240')
 def main():
 
-   camera = ViscaCamera('192.168.1.28',1259)
+   #camera = ViscaCamera('192.168.1.28',1259)
    start_server = websockets.serve(hello, "192.168.1.106", 8765)
 
    asyncio.get_event_loop().run_until_complete(start_server)

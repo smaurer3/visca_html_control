@@ -1,83 +1,143 @@
 <!DOCTYPE HTML>
-<!--
- The MIT License (MIT)
 
- This file is part of the JoyStick Project (https://github.com/bobboteck/JoyStick).
- Copyright (c) 2015 Roberto D'Amico (Bobboteck).
-
- Permission is hereby granted, free of charge, to any person obtaining a copy
- of this software and associated documentation files (the "Software"), to deal
- in the Software without restriction, including without limitation the rights
- to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- copies of the Software, and to permit persons to whom the Software is
- furnished to do so, subject to the following conditions:
- 
- The above copyright notice and this permission notice shall be included in all
- copies or substantial portions of the Software.
-
- THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- SOFTWARE.
--->
 <html>
-	<head>
-		<title>Joy</title>
-		<meta charset="utf-8">
-		<meta name="description" content="Example page of use pure Javascript JoyStick">
-		<meta name="author" content="Stephen Maurer">
-		
-		<link rel="stylesheet" href="css/style.css">
-		<style>
+<head>
+	<title>Joy</title>
+	<meta charset="utf-8">
+	<meta charset="UTF-8">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<meta name="description" content="Example page of use pure Javascript JoyStick">
+	<meta name="author" content="Stephen Maurer">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
+	<link href="css/easyui.css" rel="stylesheet" >
+	<link href="css/live.css" rel="stylesheet" >
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+	<script type="text/javascript" src="js/ptz.js"></script>
+	<script type="text/javascript" src="js/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="js/control.js"></script>
+	
 
-		</style>
-		<script src="js/joy.js"></script>
-	</head>
-	<body>
+</head>
+<body>
 
-		<!-- Example of two JoyStick integrated in the page structure -->
-		<div class="row">
-			
-			<div class="columnLateral">
-				<div id="joy1Div" style="width:200px;height:200px;margin:50px"></div>
-				Direction:<input id="joy1Direzione" type="text" /><br />
-				Pan Speed :<input id="joy1X" type="text" /></br>
-				Tilt Speed :<input id="joy1Y" type="text" />
+
+<div class="wrap">
+	<div class="container p-3">
+		<div class="row ">
+			<div class="col-4 mx-auto text-center mb-4 d-grid gap-2">
+				<button type="button" class="btn btn-secondary btn-lg preset" id="9">Baptism</button>
 			</div>
-					
-			<div class="columnLateral">
-				<!--
-				<button onmousedown="zoom_tele()" onmouseup="zoom_stop()">Tele</button>
-				<button onmousedown="zoom_wide()" onmouseup="zoom_stop()">Wide</button>
-				<button onclick="set_preset(1)">Set Rostrum</button>
-				<button onclick="set_preset(2)">Set Full Wide</button>
-				<button onclick="set_preset(3)">Set Stage</button>
-				<button onclick="set_preset(4)">Set Stage Left</button>
-                                <button onclick="set_preset(5)">Set Stage Right</button>
-                                
-<button onclick="set_preset(6)">Set Rostrum Left</button>
-
-				<button onclick="set_preset(7)">Set Rostrum Right</button>
-                                <button onclick="set_preset(8)">Set Hall Medium</button>
-                                <button onclick="set_preset(9)">Set Weddings</button>
-                                -->
-				<button onclick="preset(1)">Recall Rostrum</button>
-                                <button onclick="preset(2)">Recall Full Wide</button>
-                                <button onclick="preset(3)">Recall Stage</button>
-				<button onclick="preset(4)">Recall Stage Left</button>
-                                <button onclick="preset(5)">Recall Stage Right</button>
-                                <button onclick="preset(6)">Recall Rostrum Left</button>
-                                <button onclick="preset(7)">Recall Rostrum Right</button>
-                                <button onclick="preset(8)">Recall Hall Medium</button>
-                                <button onclick="preset(9)">Recall Baptism</button>
-			</div>
-			
 			
 		</div>
-		<script type="text/javascript" src="js/ptz.js"></script>
+		<div class="row border-secondary">
+			<div class="col-2 mx-auto text-center d-grid gap-2">
+				<button type="button" class="btn btn-secondary btn-sm preset" id="6">Rostrum Left</button>
+			</div>
+			<div class="col-2 mx-auto text-center d-grid gap-2">
+				<button type="button" class="btn btn-secondary btn-sm preset" id="4">Stage Left</button>
+			</div>
+			<div class="col-3 mx-auto text-center d-grid gap-2">
+				<button type="button" class="btn btn-primary btn-sm preset" id="1">Rostrum Centre</button>
+			</div>
+			<div class="col-2 mx-auto text-center d-grid gap-2">
+				<button type="button" class="btn btn-secondary btn-sm preset" id="5">Stage Right</button>
+			</div>
+			<div class="col-2 mx-auto text-center d-grid gap-2">
+				<button type="button" class="btn btn-secondary btn-sm preset" id="7">Rostrum Right</button>
+			</div>	
+		</div>
+		<div class="row mt-4 mb-4 d-grid gap-2">
+			<div class="col-6 text-center  d-grid gap-2 mx-auto">
+				<button type="button" class="btn btn-success btn-lg preset" id="3">Stage</button>
+			</div>
+		</div>
+		<div class="row mt-5 mb-5 text-center d-grid gap-2">
+			<div class="col-10  d-grid gap-2  d-grid gap-2 mx-auto">
+				<button type="button" class="btn btn-info btn-lg preset" id="8">Hall Medium</button>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-12 text-center d-grid gap-2">
+				<button type="button" class="btn btn-secondary btn-lg preset" id="2">Hall Wide</button>
+			</div>
+		</div>
+	</div>
+	<div class="container">
+						<div class="row border-secondary mt-5">
+							<div class="col-6 mx-auto text-center d-grid gap-2">
+								<button type="button" class="btn btn-danger btn-lg switcher" id="1">PTZ Camera</button>
+							</div>
+							<div class="col-6 mx-auto text-center d-grid gap-2">
+								<button type="button" class="btn btn-danger btn-lg switcher" id="4">Fixed Camera</button>
+							</div>
+						</div>
+					</div>
+	<div class="container ">
 		
+               
+        <table>
+            <tbody><tr>
+                <td colspan="2" class="bg-black header-tit" style="height: 22px;"><label id="laLabel">Camera Control</label></td>
+            </tr>
+            <tr>
+                <td style="vertical-align: top;">
+                    <div id="rightpreview">
+                        <div id="main_ptzbasectrl" class="ptzdiv">
+                            <table cellspacing="5" cellpadding="0" border="0" align="center">
+                                <tbody id="pantilt"><tr height="32">
+                                    <td colspan="3">
+                                        <label id="jsTabPtzTitle0"> Pant-Tilt-Zoom </label>
+                                    </td>
+                                </tr>
+                                <tr height="32">
+                                    <td><a id="up_left" style="display:" class="ptz_pt ptz tl" href="javascript:void(0)" hidefocus="" title="Up Left"></a></td>
+                                    <td><a id="up" class="ptz_pt ptz tm" href="javascript:void(0)" hidefocus="" title="Up"></a></td>
+                                    <td><a id="up_right" style="display:" class="ptz_pt ptz tr" href="javascript:void(0)" hidefocus="" title="Up Right"></a></td>
+                                </tr>
+                                <tr height="32">
+                                    <td><a id="left" class="ptz_pt ptz ml" href="javascript:void(0)" hidefocus="" title="Left"></a></td>
+                                    <td><a id="pan_home" style="display:" class="ptz_fixed ptz mm" href="javascript:void(0)" hidefocus="" title="Home"></a></td>
+                                    <td><a id="right" class="ptz_pt ptz mr" href="javascript:void(0)" hidefocus="" title="Right"></a></td>
+                                </tr>
+                                <tr height="32">
+                                    <td><a id="down_left" style="display:" class="ptz_pt ptz bl" href="javascript:void(0)" hidefocus="" title="Down Left"></a>
+                                    </td>
+                                    <td><a id="down" class="ptz_pt ptz bm" href="javascript:void(0)" hidefocus="" title="Down"></a></td>
+                                    <td><a id="ptz_pt down_right" style="display:" class="ptz br" href="javascript:void(0)" hidefocus="" title="Down Right"></a>
+                                    </td>
+                                </tr>
+                            </tbody></table>
+                        </div>
+                    </div>
+					
+                </td>
+				
+                <td>
+                    <div class="ptzdiv">
+                       
+                    </div>
+                    <div class="ptzdiv" style="margin-left:-2px;">
+                        <table style="margin-top: 0;" align="center">
+                            <tbody><tr height="32">
+                                <td><a id="tele" class="ptz_zoom ptz add" style="margin-right:8px;" href="javascript:void(0)" hidefocus="" title="Zoom In(+)"></a></td>
+                                <td><a id="laZoom" class="ptz zoom" href="javascript:void(0)" hidefocus=""></a></td>
+                                <td><a id="wide" class="ptz_zoom ptz reduce" style="margin-left:8px;" href="javascript:void(0)" hidefocus="" title="Zoom Out(-)"></a></td>
+                            </tr>
+                            
+                        </tbody></table>
+                    </div>
+                    
+                </td>
+            </tr>
+          
+        </tbody></table>
+    
+            
+	</div>
+</div>
+	
 </body>
 </html>
