@@ -19,6 +19,7 @@ class AtemSwitcher(object):
     
     def input(self, video_in):
         self.switcher.setProgramInputVideoSource(0,video_in)
+        return {"message" : "video_input", "value" : str(video_in) }
 
 class ViscaCamera(object):
    def __init__(self, camera_ip, camera_port):
@@ -52,8 +53,8 @@ class ViscaCamera(object):
       self.zoom_direct = '81 01 04 47 0p 0q 0r 0s FF' # pqrs: Zoom Position
 
       self.memory_reset = '81 01 04 3F 00 0p FF'
-      self.memory_set = '81 01 04 3F 01 0p FF' # p: Memory number (=0 to F)
-      self.memory_recall = '81 01 04 3F 02 0p FF' # p: Memory number (=0 to F)
+      self.memory_set = '81 01 04 3F 01 0%s FF' # p: Memory number (=0 to F)
+      self.memory_recall = '81 01 04 3F 02 0%s FF' # p: Memory number (=0 to F)
 
     
       # Pan speed setting 0x01 (low speed) to 0x18
@@ -61,16 +62,6 @@ class ViscaCamera(object):
      
       self.pan_speed = '05'
       self.tilt_speed = '05'
-
-      # self.pan_up = ('81 01 06 01 %s %s 03 01 FF' % (str(self.pan_speed), str(self.tilt_speed)))
-      # self.pan_down = ('81 01 06 01 %s %s 03 02 FF' % (str(self.pan_speed), str(self.tilt_speed)))
-      # self.pan_left = ('81 01 06 01 %s %s 01 03 FF' % (str(self.pan_speed), str(self.tilt_speed)))
-      # self.pan_right = ('81 01 06 01 %s %s 02 03 FF' % (str(self.pan_speed), str(self.tilt_speed)))
-      # self.pan_up_left = ('81 01 06 01 %s %s 01 01 FF' % (str(self.pan_speed), str(self.tilt_speed)))
-      # self.pan_up_right = ('81 01 06 01 %s %s 02 01 FF' % (str(self.pan_speed), str(self.tilt_speed)))
-      # self.pan_down_left = ('81 01 06 01 %s %s 01 02 FF' % (str(self.pan_speed), str(self.tilt_speed)))
-      # self.pan_down_right = ('81 01 06 01 %s %s 02 02 FF' % (str(self.pan_speed), str(self.tilt_speed)))
-      # self.pan_stop = ('81 01 06 01 %s %s 03 03 FF' % (str(self.pan_speed), str(self.tilt_speed)))
       
       
       self.pan_up = ('81 01 06 01 %s %s 03 01 FF')# % (str(self.pan_speed), str(self.tilt_speed)))
@@ -105,7 +96,7 @@ class ViscaCamera(object):
       reset_sequence_number_message = bytearray.fromhex('02 00 00 01 00 00 00 01 01')
       self.socket.sendto(reset_sequence_number_message,(self.camera_ip, self.camera_port))
       self.sequence_number = 1
-      return self.sequence_number
+      return  {"message" : "reset", "value" : self.sequence_number }
 
    def send_message(self, message_string): 
       try:
@@ -115,58 +106,77 @@ class ViscaCamera(object):
           message = payload_type + payload_length + self.sequence_number.to_bytes(4, 'big') + payload
           self.sequence_number += 1
           self.socket.sendto(message, (self.camera_ip, self.camera_port))
-          return True
+          return {"message" : "send_message", "value" : message_string }
       except:
-          return False
+          return  {"message" : "send_message", "value" : False }
 
    def recall_memory(self, memory_number):
       self.send_message(self.information_display_off) # otherwise we see a message on the camera output
       sleep(0.25)
-      message_string = self.memory_recall.replace('p', str(memory_number))
+      message_string = (self.memory_recall % (str(memory_number)))
       message = self.send_message(message_string)
       sleep(1)
       self.send_message(self.information_display_off) # to make sure it doesn't display "done"
-      return message
+      return  {"message" : "recall", "value" : memory_number }
 
    def set_memory(self, memory_number):
-      message_string = self.memory_set.replace('p', str(memory_number))
+      message_string = (self.memory_set % (str(memory_number)))
       message = self.send_message(message_string)
-      return message
+      return  {"message" : "set", "value" : memory_number }
 
 
 
 USERS = set()
+SWITCHER = {"not_set": ""}
+PRESET = {"not_set": ""}
+MESSAGE = {"not_set": ""}
+async def notify_state():
+    if USERS:  # asyncio.wait doesn't accept an empty list
+        print (MESSAGE)
+        message = json.dumps({"message" : MESSAGE, "switcher" : SWITCHER, "preset" : PRESET})
+        print ("Message %s" % message)
 
+        await asyncio.wait([user.send(message) for user in USERS])
 async def register(websocket):
     USERS.add(websocket)
+    await notify_state()
 
 async def unregister(websocket):
     USERS.remove(websocket)
+    await notify_state()
 
 async def hello(websocket, path):
+   global MESSAGE
+   global SWITCHER
+   global PRESET
    await register(websocket)
    try:
         async for message in websocket:
             command = json.loads(message)
             if command["type"] == "recall":
                 print("Camera Recall %s" % command["value"])
-                camera.recall_memory(command["value"])
+                PRESET = camera.recall_memory(command["value"])
+                await notify_state()
             elif command["type"] == "set":
                 print("Camera Set %s" % command["value"])
-                camera.set_memory(command["value"])
+                MESSAGE = camera.set_memory(command["value"])
+                await notify_state()
             elif command["type"] == "fixed":
                print(command)
                visca_command = getattr(camera,command["command"])
                print(visca_command)
-               camera.send_message(visca_command)
+               MESSAGE = camera.send_message(visca_command)
+               await notify_state()
             elif command["type"] == "switcher":
                print(command)
-               switcher.input(command["input"])
+               SWITCHER = switcher.input(command["input"])
+               await notify_state()
             else:
                print(command)
                visca_command = getattr(camera,command["type"]) % (str(command["pan_speed"]).zfill(2), str(command["tilt_speed"]).zfill(2))
                print(visca_command)
-               camera.send_message(visca_command)
+               MESSAGE = camera.send_message(visca_command)
+               await notify_state()
                #print(command)
                
    finally:

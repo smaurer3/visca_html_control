@@ -2,6 +2,7 @@
 var ws = null;
 var connected = false;
 var connecting = false;
+$(document).ready(function(){
 connect("ws://192.168.1.106:8765");
 
 function connect(uri) {
@@ -14,15 +15,39 @@ function connect(uri) {
 		
 	ws.addEventListener('open', function () {
 		console.log("Connected");
+		$('body').css("background-color", "white")
 	});
-	ws.addEventListener('message', function () {  // Received Data
-		console.log(ws.rQshiftStr());
+	ws.addEventListener('message', function (event) {  // Received Data
+		recv = JSON.parse(event.data)
+		console.log("Received" ,recv);
+		if (recv['preset']['message'] == "recall"){
+			previous_select = $(".preset.btn-primary");
+			previous_select.removeClass('btn-primary');
+			previous_select.addClass('btn-secondary');
+			current_select = $("#pre-" + recv['preset']["value"]) ;
+			current_select.removeClass('btn-secondary');
+			current_select.addClass('btn-primary');
+			console.log(current_select);
+		}
+		
+		if (recv['switcher']['message'] == "video_input"){
+			console.log("switcher");
+			previous_select = $(".switcher.btn-success");
+			console.log(previous_select)
+			previous_select.removeClass('btn-success');
+			previous_select.addClass('btn-danger');
+	
+			current_select = $("#switch-" + recv['switcher']["value"]);
+			current_select.removeClass('btn-danger');
+			current_select.addClass('btn-success');
+			console.log(current_select);
+		}
 	});
 	ws.addEventListener('close', function () {
 		disconnect();
 		connected = false;
 		$('body').css("background-color", "red")
-		if (verbose) { console.log("Disconnected")};
+		console.log("Disconnected");
 	});
 
 	
@@ -49,33 +74,38 @@ function send(data) {
         e.preventDefault();
     }, false);
 
-$(document).ready(function(){
+
   $(".ptz_fixed").click(function(){
 	  visca_fixed(this.id);
   
   });
   
    $(".preset").click(function(){
+	  value = this.id.split('-')[1]
 	  if ($("#save_preset").is(':checked')) {
 		  if (confirm("This will overwrite the current preset for " + this.innerHTML)) {
-			  set_preset(this.id);
+			 
+			  set_preset(value);
 		  } else {
 			return;
 		  }
 	  } else {
-		preset(this.id);
+		  
+		preset(value);
 	  }
   
   });
   
    $(".switcher").click(function(){
-	  switcher(this.id);
+	   value = this.id.split('-')[1]
+	  switcher(value);
   
   });
   
   $(".ptz_pt").mousedown(function(){
 		console.log(this.id);
-		pan_tilt(this.id);
+		value = this.id.split('-')[1]
+		pan_tilt(value);
   });
   
    $(".ptz_pt").mouseup(function(){
