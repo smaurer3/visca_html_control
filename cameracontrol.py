@@ -11,9 +11,11 @@ import PyATEMMax
 
 class AtemSwitcher(object):
     def __init__(self, atem_ip):
+        print ("Attempting to connect to ATEM Switcher")
         self.switcher = PyATEMMax.ATEMMax()
         self.switcher.connect(atem_ip)
         self.switcher.waitForConnection()
+        print ("Connected to ATEM Switcher")
     
     def input(self, video_in):
         self.switcher.setProgramInputVideoSource(0,video_in)
@@ -22,9 +24,16 @@ class ViscaCamera(object):
    def __init__(self, camera_ip, camera_port):
       self.camera_ip = camera_ip
       self.camera_port = camera_port
-
-      self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-      
+      print ("Attempting to connect to Camera IP")
+      while True:
+        try:
+            self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            break
+            sleep(.5)
+        except:
+            pass
+        
+      print("Connected to Camera IP")
       
       self.sequence_number = 1 # a variable that we'll iterate each command, remember 0x0001
       self.reset_sequence_number = '02 00 00 01 00 00 00 01 01'
@@ -164,12 +173,12 @@ async def hello(websocket, path):
          await unregister(websocket)
 
       
-
 camera = ViscaCamera('192.168.1.28',1259)
 switcher = AtemSwitcher('192.168.1.240')
 def main():
 
    #camera = ViscaCamera('192.168.1.28',1259)
+   print ("Starting Web socket server")
    start_server = websockets.serve(hello, "192.168.1.106", 8765)
 
    asyncio.get_event_loop().run_until_complete(start_server)

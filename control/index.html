@@ -2,14 +2,14 @@
 
 <html>
 <head>
-	<title>Joy</title>
+	<title>GRC Hall Cameras</title>
 	<meta charset="utf-8">
 	<meta charset="UTF-8">
   <meta name="theme-color" content="#000000">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-	<meta name="description" content="Example page of use pure Javascript JoyStick">
+	
 	<meta name="author" content="Stephen Maurer">
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-wEmeIV1mKuiNpC+IOBjI7aAzPcEZeedi5yW5f2yOq55WWLwNGmvvx4Um1vskeMj0" crossorigin="anonymous">
 	<link href="css/easyui.css" rel="stylesheet" >
@@ -126,6 +126,16 @@
                                 <td><a id="laZoom" class="ptz zoom" href="javascript:void(0)" hidefocus=""></a></td>
                                 <td><a id="wide" class="ptz_zoom ptz reduce" style="margin-left:8px;" href="javascript:void(0)" hidefocus="" title="Zoom Out(-)"></a></td>
                             </tr>
+							<tr>
+								<td></td><td></td>
+								<td>
+									<label for="save_preset">Save preset</label> <input type="checkbox" id="save_preset"/>
+								</td>
+							</tr>
+							<tr>
+								<td></td><td></td>
+								<td><label for="pt_speed">Pan/Tilt Speed</label> <input type="range" id="pt_speed" min="0" max="15"/></td>
+							<tr>
                             
                         </tbody></table>
                     </div>

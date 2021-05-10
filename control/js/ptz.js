@@ -1,4 +1,50 @@
-var ws = new WebSocket("ws://192.168.1.106:8765")
+
+var ws = null;
+var connected = false;
+var connecting = false;
+connect("ws://192.168.1.106:8765");
+
+function connect(uri) {
+	$('body').css("background-color", "red")
+	connecting = true;
+	console.log("connecting to: " + uri);
+	ws = new WebSocket(uri)
+	
+
+		
+	ws.addEventListener('open', function () {
+		console.log("Connected");
+	});
+	ws.addEventListener('message', function () {  // Received Data
+		console.log(ws.rQshiftStr());
+	});
+	ws.addEventListener('close', function () {
+		disconnect();
+		connected = false;
+		$('body').css("background-color", "red")
+		if (verbose) { console.log("Disconnected")};
+	});
+
+	
+}
+
+function disconnect() {
+	if (ws) { ws.close(); }
+	ws = null;
+
+	
+}
+
+function send(data) {
+	if (!connected && !connecting){
+		connect();
+	} else {
+		console.log(data);
+		ws.send(data);
+	}
+};
+
+
  document.addEventListener("contextmenu", function (e) {
         e.preventDefault();
     }, false);
@@ -10,7 +56,15 @@ $(document).ready(function(){
   });
   
    $(".preset").click(function(){
-	  preset(this.id);
+	  if ($("#save_preset").is(':checked')) {
+		  if (confirm("This will overwrite the current preset for " + this.innerHTML)) {
+			  set_preset(this.id);
+		  } else {
+			return;
+		  }
+	  } else {
+		preset(this.id);
+	  }
   
   });
   
@@ -21,26 +75,26 @@ $(document).ready(function(){
   
   $(".ptz_pt").mousedown(function(){
 		console.log(this.id);
-		pan_tilt(this.id,1);
+		pan_tilt(this.id);
   });
   
    $(".ptz_pt").mouseup(function(){
 		console.log("stop");
-		pan_tilt("stop",1);
+		pan_tilt("stop");
   });
   
      $(".ptz_pt").mouseout(function(){
 		console.log("stop");
-		pan_tilt("stop",1);
+		pan_tilt("stop");
   })
   
     $(".ptz_zoom").mousedown(function(){
 		console.log(this.id);
-		zoom(this.id,1);
+		zoom(this.id);
   });
    $(".ptz_zoom").mouseup(function(){
 		console.log("stop");
-		zoom("stop",1);
+		zoom("stop");
   });
 });
 
@@ -50,7 +104,7 @@ function switcher(command) {
 			"type" : "switcher",
 			"input" : parseInt(command)
 			};
-	console.log(command, "visca");
+	console.log(command);
 	ws.send(JSON.stringify(command));		
 }
 
@@ -101,8 +155,8 @@ function preset(n) {
 	}
 	
 
-function pan_tilt(direction, speed) {
-		
+function pan_tilt(direction) {
+	speed = $("#pt_speed").val()
 	pan_speed = speed;
 	tilt_speed = speed;
 		 
