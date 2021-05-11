@@ -28,20 +28,20 @@ function connect(uri) {
 			current_select = $("#pre-" + recv['preset']["value"]) ;
 			current_select.removeClass('btn-secondary');
 			current_select.addClass('btn-primary');
-			console.log(current_select);
+			
 		}
 		
 		if (recv['switcher']['message'] == "video_input"){
-			console.log("switcher");
+			
 			previous_select = $(".switcher.btn-danger");
-			console.log(previous_select)
+	
 			previous_select.removeClass('btn-danger');
 			previous_select.addClass('btn-light');
 	
 			current_select = $("#switch-" + recv['switcher']["value"]);
 			current_select.removeClass('btn-light');
 			current_select.addClass('btn-danger');
-			console.log(current_select);
+			
 		}
 	});
 	ws.addEventListener('close', function () {
