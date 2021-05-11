@@ -15,6 +15,8 @@ function connect(uri) {
 		
 	ws.addEventListener('open', function () {
 		console.log("Connected");
+		connected = true;
+		connecting = false;
 		$('body').css("background-color", "white")
 	});
 	ws.addEventListener('message', function (event) {  // Received Data
