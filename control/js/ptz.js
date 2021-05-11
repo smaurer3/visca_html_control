@@ -102,30 +102,31 @@ function send(data) {
   
   });
   
-  $(".ptz_pt").mousedown(function(){
+  $(".ptz_pt").bind("mousedown touchstart", (function(){
 		console.log(this.id);
-		value = this.id.split('-')[1]
+		value = this.id
 		pan_tilt(value);
-  });
+  }));
   
-   $(".ptz_pt").mouseup(function(){
+  
+   $(".ptz_pt").bind("mouseup touchend mouseout",(function(){
 		console.log("stop");
 		pan_tilt("stop");
-  });
+  }));
   
-     $(".ptz_pt").mouseout(function(){
-		console.log("stop");
-		pan_tilt("stop");
-  })
   
-    $(".ptz_zoom").mousedown(function(){
+  
+    $(".ptz_zoom").bind("mousedown touchstart", (function(){
 		console.log(this.id);
 		zoom(this.id);
-  });
-   $(".ptz_zoom").mouseup(function(){
+  }));
+  
+
+   $(".ptz_zoom").bind("mouseup touchend mouseout",(function(){
 		console.log("stop");
 		zoom("stop");
-  });
+  }));
+  
 });
 
 
