@@ -12,7 +12,6 @@ function connect(uri) {
 	ws = new WebSocket(uri)
 	
 
-		
 	ws.addEventListener('open', function () {
 		console.log("Connected");
 		connected = true;
@@ -34,14 +33,14 @@ function connect(uri) {
 		
 		if (recv['switcher']['message'] == "video_input"){
 			console.log("switcher");
-			previous_select = $(".switcher.btn-success");
+			previous_select = $(".switcher.btn-danger");
 			console.log(previous_select)
-			previous_select.removeClass('btn-success');
-			previous_select.addClass('btn-danger');
+			previous_select.removeClass('btn-danger');
+			previous_select.addClass('btn-light');
 	
 			current_select = $("#switch-" + recv['switcher']["value"]);
-			current_select.removeClass('btn-danger');
-			current_select.addClass('btn-success');
+			current_select.removeClass('btn-light');
+			current_select.addClass('btn-danger');
 			console.log(current_select);
 		}
 	});

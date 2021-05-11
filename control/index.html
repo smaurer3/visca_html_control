@@ -24,30 +24,35 @@
 </head>
 <body>
 
-
 <div class="wrap">
-	<div class="container p-3">
+	<div class="container border shadow rounded p-3">
+		<div class="row ">
+			<div class="col-4 mx-auto text-center mb-4 d-grid gap-2">
+				Camera Presets
+			</div>
+		</div>
+		
 		<div class="row ">
 			<div class="col-4 mx-auto text-center mb-4 d-grid gap-2">
 				<button type="button" class="btn btn-secondary btn-lg preset" id="pre-9">Baptism</button>
 			</div>
 			
 		</div>
-		<div class="row border-secondary">
-			<div class="col-2 mx-auto text-center d-grid gap-2">
-				<button type="button" class="btn btn-secondary btn-sm preset" id="pre-6">Rostrum Left</button>
+		<div class="row border-secondary mx-auto ">
+			<div class="col-2 mx-auto text-center d-grid gap-0">
+				<button type="button" class="btn btn-secondary btn-sm btn-block preset" id="pre-6">Rostrum Left</button>
 			</div>
-			<div class="col-2 mx-auto text-center d-grid gap-2">
-				<button type="button" class="btn btn-secondary btn-sm preset" id="pre-4">Stage Left</button>
+			<div class="col-2 mx-auto text-center d-grid gap-0">
+				<button type="button" class="btn btn-secondary btn-sm  btn-block preset" id="pre-4">Stage Left</button>
 			</div>
-			<div class="col-3 mx-auto text-center d-grid gap-2">
-				<button type="button" class="btn btn-secondary btn-sm preset" id="pre-1">Rostrum Centre</button>
+			<div class="col-3 mx-auto text-center d-grid gap-0">
+				<button type="button" class="btn btn-secondary btn-sm btn-block preset" id="pre-1">Rostrum Centre</button>
 			</div>
-			<div class="col-2 mx-auto text-center d-grid gap-2">
-				<button type="button" class="btn btn-secondary btn-sm preset" id="pre-5">Stage Right</button>
+			<div class="col-2 mx-auto text-center d-grid gap-0">
+				<button type="button" class="btn btn-secondary btn-sm btn-block preset" id="pre-5">Stage Right</button>
 			</div>
-			<div class="col-2 mx-auto text-center d-grid gap-2">
-				<button type="button" class="btn btn-secondary btn-sm preset" id="pre-7">Rostrum Right</button>
+			<div class="col-2 mx-auto text-center d-grid gap-0">
+				<button type="button" class="btn btn-secondary btn-sm btn-block preset" id="pre-7">Rostrum Right</button>
 			</div>	
 		</div>
 		<div class="row mt-4 mb-4 d-grid gap-2">
@@ -66,33 +71,35 @@
 			</div>
 		</div>
 	</div>
-	<div class="container">
-						<div class="row border-secondary mt-5">
+	<div class="container border shadow rounded p-3 mt-2">
+			<div class="row ">
+				<div class="col-4 mx-auto text-center mb-4 d-grid gap-2">
+					Video Switcher
+				</div>
+			</div>
+						<div class="row border-secondary ">
 							<div class="col-6 mx-auto text-center d-grid gap-2">
-								<button type="button" class=" btn btn-danger btn-lg switcher" id="switch-1">PTZ Camera</button>
+								<button type="button" class=" btn btn-light btn-lg switcher" id="switch-1">PTZ Camera</button>
 							</div>
 							<div class="col-6 mx-auto text-center d-grid gap-2">
-								<button type="button" class=" btn btn-danger btn-lg switcher" id="switch-4">Fixed Camera</button>
+								<button type="button" class=" btn btn-light btn-lg switcher" id="switch-4">Fixed Camera</button>
 							</div>
 						</div>
 					</div>
-	<div class="container ">
-		
+	<div class="container border shadow rounded p-3 mt-2">
+		<div class="row ">
+				<div class="col-4 mx-auto text-center d-grid gap-2">
+					Camera Control
+				</div>
+			</div>
                
         <table>
-            <tbody><tr>
-                <td colspan="2" class="bg-black header-tit" style="height: 22px;"><label id="laLabel">Camera Control</label></td>
-            </tr>
+            <tbody>
             <tr>
                 <td style="vertical-align: top;">
-                    <div id="rightpreview">
-                        <div id="main_ptzbasectrl" class="ptzdiv">
+             
                             <table cellspacing="5" cellpadding="0" border="0" align="center">
-                                <tbody id="pantilt"><tr height="32">
-                                    <td colspan="3">
-                                        <label id="jsTabPtzTitle0"> Pant-Tilt-Zoom </label>
-                                    </td>
-                                </tr>
+                                <tbody id="pantilt">
                                 <tr height="32">
                                     <td><a id="up_left" style="display:" class="ptz_pt ptz tl" href="javascript:void(0)" hidefocus="" title="Up Left"></a></td>
                                     <td><a id="up" class="ptz_pt ptz tm" href="javascript:void(0)" hidefocus="" title="Up"></a></td>
@@ -111,8 +118,7 @@
                                     </td>
                                 </tr>
                             </tbody></table>
-                        </div>
-                    </div>
+                    
 					
                 </td>
 				
@@ -121,24 +127,29 @@
                        
                     </div>
                     <div class="ptzdiv" style="margin-left:-2px;">
-                        <table style="margin-top: 0;" align="center">
+                        <table  align="center">
                             <tbody><tr height="32">
                                 <td><a id="tele" class="ptz_zoom ptz add" style="margin-right:8px;" href="javascript:void(0)" hidefocus="" title="Zoom In(+)"></a></td>
                                 <td><a id="laZoom" class="ptz zoom" href="javascript:void(0)" hidefocus=""></a></td>
                                 <td><a id="wide" class="ptz_zoom ptz reduce" style="margin-left:8px;" href="javascript:void(0)" hidefocus="" title="Zoom Out(-)"></a></td>
                             </tr>
-							<tr>
-								<td></td><td></td>
+			
+                            
+                        </tbody></table>
+                        <table>
+                        	<tbody>
+                        	<tr>
+								
 								<td>
 									<label for="save_preset">Save preset</label> <input type="checkbox" id="save_preset"/>
 								</td>
 							</tr>
 							<tr>
-								<td></td><td></td>
-								<td><label for="pt_speed">Pan/Tilt Speed</label> <input type="range" id="pt_speed" min="0" max="15"/></td>
+								
+								<td><label for="pt_speed">Pan/Tilt Speed</label> <input type="range" id="pt_speed" min="0" max="15" value="1"/></td>
 							<tr>
-                            
-                        </tbody></table>
+							</tbody>
+							</table>
                     </div>
                     
                 </td>
