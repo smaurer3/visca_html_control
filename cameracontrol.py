@@ -178,7 +178,8 @@ async def hello(websocket, path):
                MESSAGE = camera.send_message(visca_command)
                await notify_state()
                #print(command)
-               
+   except Exception as e:
+                print("Something Went Wrong: %s" % e)
    finally:
          await unregister(websocket)
 
