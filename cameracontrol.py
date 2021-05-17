@@ -201,7 +201,7 @@ class ws_Server(WebSocket):
                     "message" : MESSAGE, 
                     "switcher" : SWITCHER, 
                     "preset" : PRESET,
-                    "input" : input
+                    "input" : str(input)
                     
                     })
                 client.send_message(message)
