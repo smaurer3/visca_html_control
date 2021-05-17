@@ -194,13 +194,14 @@ class ws_Server(WebSocket):
 
     def notify_state(self):
         input = switcher.get_input()
+        verboseprint(input)
         for client in clients:
             try:
                 message = json.dumps({
                     "message" : MESSAGE, 
                     "switcher" : SWITCHER, 
-                    "preset" : PRESET,
-                    "input" : input
+                    "preset" : PRESET
+                    
                     })
                 client.send_message(message)
             except Exception as e:
