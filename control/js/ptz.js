@@ -58,6 +58,7 @@ function disconnect() {
 	if (ws) { ws.close(); }
 	ws = null;
 
+	connect();
 	
 }
 

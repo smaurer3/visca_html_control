@@ -132,9 +132,9 @@ PRESET = {"not_set": ""}
 MESSAGE = {"not_set": ""}
 async def notify_state():
     if USERS:  # asyncio.wait doesn't accept an empty list
-        print (MESSAGE)
+        #print (MESSAGE)
         message = json.dumps({"message" : MESSAGE, "switcher" : SWITCHER, "preset" : PRESET})
-        print ("Message %s" % message)
+        #print ("Message %s" % message)
 
         await asyncio.wait([user.send(message) for user in USERS])
 async def register(websocket):
@@ -154,27 +154,27 @@ async def hello(websocket, path):
         async for message in websocket:
             command = json.loads(message)
             if command["type"] == "recall":
-                print("Camera Recall %s" % command["value"])
+                #print("Camera Recall %s" % command["value"])
                 PRESET = camera.recall_memory(command["value"])
                 await notify_state()
             elif command["type"] == "set":
-                print("Camera Set %s" % command["value"])
+                #print("Camera Set %s" % command["value"])
                 MESSAGE = camera.set_memory(command["value"])
                 await notify_state()
             elif command["type"] == "fixed":
-               print(command)
+               #print(command)
                visca_command = getattr(camera,command["command"])
-               print(visca_command)
+               #print(visca_command)
                MESSAGE = camera.send_message(visca_command)
                await notify_state()
             elif command["type"] == "switcher":
-               print(command)
+               #print(command)
                SWITCHER = switcher.input(command["input"])
                await notify_state()
             else:
-               print(command)
+               #print(command)
                visca_command = getattr(camera,command["type"]) % (str(command["pan_speed"]).zfill(2), str(command["tilt_speed"]).zfill(2))
-               print(visca_command)
+               #print(visca_command)
                MESSAGE = camera.send_message(visca_command)
                await notify_state()
                #print(command)
