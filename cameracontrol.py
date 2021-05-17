@@ -200,7 +200,8 @@ class ws_Server(WebSocket):
                 message = json.dumps({
                     "message" : MESSAGE, 
                     "switcher" : SWITCHER, 
-                    "preset" : PRESET
+                    "preset" : PRESET,
+                    "input" : input
                     
                     })
                 client.send_message(message)
