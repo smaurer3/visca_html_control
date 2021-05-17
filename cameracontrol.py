@@ -20,6 +20,9 @@ class AtemSwitcher(object):
         self.switcher.setProgramInputVideoSource(0,video_in)
         return {"message" : "video_input", "value" : str(video_in) }
 
+    def get_input(self):
+        return switcher.programInput[0].videoSource
+
 class ViscaCamera(object):
    def __init__(self, camera_ip, camera_port):
       self.camera_ip = camera_ip
@@ -190,9 +193,15 @@ class ws_Server(WebSocket):
             verboseprint("Couldn't remove client: %s" % e)
 
     def notify_state(self):
+        input = switcher.get_input()
         for client in clients:
             try:
-                message = json.dumps({"message" : MESSAGE, "switcher" : SWITCHER, "preset" : PRESET})
+                message = json.dumps({
+                    "message" : MESSAGE, 
+                    "switcher" : SWITCHER, 
+                    "preset" : PRESET,
+                    "input" : input
+                    })
                 client.send_message(message)
             except Exception as e:
                 verboseprint("Something Went Wrong in handle_close: %s" % e)
