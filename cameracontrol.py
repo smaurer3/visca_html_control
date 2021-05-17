@@ -198,7 +198,7 @@ class ws_Server(WebSocket):
                 verboseprint("Something Went Wrong in handle_close: %s" % e)
                
 
-def server_thread(port):
+def server_thread():
     server = WebSocketServer('', 8765, ws_Server)
     print ("Starting Web socket server")
     server.serve_forever()           
@@ -212,7 +212,7 @@ verboseprint = lambda s: print(s)
 def main():
 
     print ("Starting Web socket server")
-    ws_thread = Thread(target=server_thread, args=(port,))
+    ws_thread = Thread(target=server_thread)
     ws_thread.start()
 
 
