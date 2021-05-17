@@ -21,7 +21,7 @@ class AtemSwitcher(object):
         return {"message" : "video_input", "value" : str(video_in) }
 
     def get_input(self):
-        return switcher.programInput[0].videoSource
+        return self.switcher.programInput[0].videoSource
 
 class ViscaCamera(object):
    def __init__(self, camera_ip, camera_port):
