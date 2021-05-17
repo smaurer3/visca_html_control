@@ -2,10 +2,9 @@
 
 import socket
 from time import sleep
-import asyncio
-import websockets
+from simple_websocket_server import WebSocketServer, WebSocket
 import json
-
+from threading import Thread
 import PyATEMMax
 
 
@@ -124,76 +123,97 @@ class ViscaCamera(object):
       message = self.send_message(message_string)
       return  {"message" : "set", "value" : memory_number }
 
-
-
-USERS = set()
+########SIMPLE-WEBSOCKETS################################
+clients = []
 SWITCHER = {"not_set": ""}
 PRESET = {"not_set": ""}
 MESSAGE = {"not_set": ""}
-async def notify_state():
-    if USERS:  # asyncio.wait doesn't accept an empty list
-        #print (MESSAGE)
-        message = json.dumps({"message" : MESSAGE, "switcher" : SWITCHER, "preset" : PRESET})
-        #print ("Message %s" % message)
 
-        await asyncio.wait([user.send(message) for user in USERS])
-async def register(websocket):
-    USERS.add(websocket)
-    await notify_state()
+class ws_Server(WebSocket):
 
-async def unregister(websocket):
-    USERS.remove(websocket)
-    await notify_state()
-
-async def hello(websocket, path):
-   global MESSAGE
-   global SWITCHER
-   global PRESET
-   await register(websocket)
-   try:
-        async for message in websocket:
-            command = json.loads(message)
+    def handle(self):
+   
+        command = json.loads(self.data)
+        try:
+            
             if command["type"] == "recall":
-                #print("Camera Recall %s" % command["value"])
+                verboseprint("Camera Recall %s" % command["value"])
                 PRESET = camera.recall_memory(command["value"])
-                await notify_state()
+                self.notify_state()
             elif command["type"] == "set":
-                #print("Camera Set %s" % command["value"])
+                verboseprint("Camera Set %s" % command["value"])
                 MESSAGE = camera.set_memory(command["value"])
-                await notify_state()
+                self.notify_state()
             elif command["type"] == "fixed":
-               #print(command)
+               verboseprint(command)
                visca_command = getattr(camera,command["command"])
-               #print(visca_command)
+               verboseprint(visca_command)
                MESSAGE = camera.send_message(visca_command)
-               await notify_state()
+               self.notify_state()
             elif command["type"] == "switcher":
-               #print(command)
+               verboseprint(command)
                SWITCHER = switcher.input(command["input"])
-               await notify_state()
+               self.notify_state()
             else:
-               #print(command)
+               verboseprint(command)
                visca_command = getattr(camera,command["type"]) % (str(command["pan_speed"]).zfill(2), str(command["tilt_speed"]).zfill(2))
-               #print(visca_command)
+               verboseprint(visca_command)
                MESSAGE = camera.send_message(visca_command)
-               await notify_state()
-               #print(command)
-   except Exception as e:
-                print("Something Went Wrong: %s" % e)
-   finally:
-         await unregister(websocket)
+               self.notify_state()
+               verboseprint(command)
+        except Exception as e:
+                print("Something Went Wrong: %s" % e)    
+        
+    def connected(self):
+        global clearone_connected
+        try:
+            print(self.address, 'connected')
+            clients.append(self)
+        except Exception as e:
+                verboseprint("Something Went Wrong in connected: %s" % e)
+                self.remove_me(self)
 
-      
+    def handle_close(self):
+        global clearone_connected
+        try:
+            clients.remove(self)
+            print(self.address, 'closed')
+        except Exception as e:
+                verboseprint("Something Went Wrong in handle_close: %s" % e)
+                self.remove_me(self)
+    
+    def remove_me(self):
+        try:
+            print("Trying to remove client")
+            clients.remove(self)
+        except Exception as e:
+            verboseprint("Couldn't remove client: %s" % e)
+
+    def notify_state(self,messgae):
+        for client in clients:
+            try:
+                message = json.dumps({"message" : MESSAGE, "switcher" : SWITCHER, "preset" : PRESET})
+                client.send_message(message)
+            except Exception as e:
+                verboseprint("Something Went Wrong in handle_close: %s" % e)
+               
+
+def server_thread(port):
+    server = WebSocketServer('', 8765, ws_Server)
+    print ("Starting Web socket server")
+    server.serve_forever()           
+          
 camera = ViscaCamera('192.168.1.28',1259)
 switcher = AtemSwitcher('192.168.1.240')
+
+verboseprint = lambda s: None
+
+verboseprint = lambda s: print(s)
 def main():
 
-   #camera = ViscaCamera('192.168.1.28',1259)
-   print ("Starting Web socket server")
-   start_server = websockets.serve(hello, "192.168.1.106", 8765)
-
-   asyncio.get_event_loop().run_until_complete(start_server)
-   asyncio.get_event_loop().run_forever()
+    print ("Starting Web socket server")
+    ws_thread = Thread(target=server_thread, args=(port,))
+    ws_thread.start()
 
 
 main()
