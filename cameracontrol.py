@@ -83,6 +83,7 @@ class ViscaCamera(object):
 
       self.inquiry_lens_control = '81 09 7E 7E 00 FF'
       self.inquiry_camera_control = '81 09 7E 7E 01 FF'
+      self.CAM_MemoryInq = ('81 09 04 3F FF')
 
       self.focus_stop = '81 01 04 08 00 FF'
       self.focus_far = '81 01 04 08 02 FF'
@@ -125,6 +126,18 @@ class ViscaCamera(object):
       message_string = (self.memory_set % (str(memory_number)))
       message = self.send_message(message_string)
       return  {"message" : "set", "value" : memory_number }
+
+   def get_memory(self):
+        self.send_message(self.CAM_MemoryInq)
+        return self.rx_data
+
+   def rx_data(self):
+        try:
+            msg = self.socket.recv(512).decode('utf-8')
+            verboseprint("RAW Data Received: %s" % msg)
+        except:
+            return(False)
+        return(msg)
 
 ########SIMPLE-WEBSOCKETS################################
 clients = []
@@ -172,6 +185,7 @@ class ws_Server(WebSocket):
         try:
             print(self.address, 'connected')
             clients.append(self)
+            self.notify_state()
         except Exception as e:
                 verboseprint("Something Went Wrong in connected: %s" % e)
                 self.remove_me(self)

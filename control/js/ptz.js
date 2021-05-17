@@ -2,8 +2,9 @@
 var ws = null;
 var connected = false;
 var connecting = false;
+var uri = "ws://192.168.1.106:8765"
 $(document).ready(function(){
-connect("ws://192.168.1.106:8765");
+connect(uri);
 
 function connect(uri) {
 	$('body').css("background-color", "red")
@@ -58,7 +59,7 @@ function disconnect() {
 	if (ws) { ws.close(); }
 	ws = null;
 
-	connect();
+	connect(uri);
 	
 }
 
