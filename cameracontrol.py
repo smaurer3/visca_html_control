@@ -132,7 +132,7 @@ MESSAGE = {"not_set": ""}
 class ws_Server(WebSocket):
 
     def handle(self):
-   
+        global SWITCHER, PRESET, MESSAGE
         command = json.loads(self.data)
         try:
             
