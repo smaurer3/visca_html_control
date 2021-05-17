@@ -189,7 +189,7 @@ class ws_Server(WebSocket):
         except Exception as e:
             verboseprint("Couldn't remove client: %s" % e)
 
-    def notify_state(self,messgae):
+    def notify_state(self):
         for client in clients:
             try:
                 message = json.dumps({"message" : MESSAGE, "switcher" : SWITCHER, "preset" : PRESET})
