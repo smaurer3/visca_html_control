@@ -6,7 +6,7 @@ from simple_websocket_server import WebSocketServer, WebSocket
 import json
 from threading import Thread
 import PyATEMMax
-
+from pprint import pprint
 
 class AtemSwitcher(object):
     def __init__(self, atem_ip):
@@ -234,7 +234,7 @@ switcher = AtemSwitcher('192.168.1.240')
 
 verboseprint = lambda s: None
 
-verboseprint = lambda s: print(s)
+verboseprint = lambda s: pprint(s)
 def main():
 
     print ("Starting Web socket server")
