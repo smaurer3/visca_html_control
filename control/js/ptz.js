@@ -30,10 +30,9 @@ function connect(uri) {
 			current_select = $("#pre-" + recv['preset']["value"]) ;
 			current_select.removeClass('btn-secondary');
 			current_select.addClass('btn-primary');
-			
 		}
 		value = recv['input'].split('input')[1];
-
+		console.log(value, previous_input);
 		if (previous_input != value){
 			previous_input = value;
 			previous_select = $(".switcher.btn-danger");
