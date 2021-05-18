@@ -129,7 +129,7 @@ class ViscaCamera(object):
 
    def get_memory(self):
         self.send_message(self.CAM_MemoryInq)
-        return self.rx_data
+        return self.rx_data()
 
    def rx_data(self):
         print ("here")
