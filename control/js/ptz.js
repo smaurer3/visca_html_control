@@ -2,7 +2,8 @@
 var ws = null;
 var connected = false;
 var connecting = false;
-var uri = "ws://192.168.1.106:8765"
+var uri = "ws://192.168.1.106:8765";
+var previous_input = "0";
 $(document).ready(function(){
 connect(uri);
 
@@ -31,15 +32,14 @@ function connect(uri) {
 			current_select.addClass('btn-primary');
 			
 		}
-		
-		if (recv['switcher']['message'] == "video_input"){
-			
+		value = recv['input'].split('input')[1];
+
+		if (previous_input != value){
+			previous_input = value;
 			previous_select = $(".switcher.btn-danger");
-	
 			previous_select.removeClass('btn-danger');
 			previous_select.addClass('btn-light');
-			value = recv['input'].split('input')[1]
-			current_select = $("#switch-" + recv['switcher']["value"]);
+			current_select = $("#switch-" + value);
 			current_select.removeClass('btn-light');
 			current_select.addClass('btn-danger');
 			
