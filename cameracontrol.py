@@ -208,7 +208,8 @@ class ws_Server(WebSocket):
 
     def notify_state(self):
         input = switcher.get_input()
-        verboseprint(input)
+        memory = camera.get_memory()
+        verboseprint(memory)
         for client in clients:
             try:
                 message = json.dumps({
