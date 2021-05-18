@@ -132,6 +132,7 @@ class ViscaCamera(object):
         return self.rx_data
 
    def rx_data(self):
+        print ("here")
         try:
             msg = self.socket.recv(512).decode('utf-8')
             verboseprint("RAW Data Received: %s" % msg)
