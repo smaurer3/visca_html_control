@@ -32,7 +32,7 @@ function connect(uri) {
 			current_select.addClass('btn-primary');
 		}
 		value = recv['input'].split('input')[1];
-		console.log(value, previous_input);
+		
 		if (previous_input != value){
 			previous_input = value;
 			previous_select = $(".switcher.btn-danger");
@@ -199,7 +199,7 @@ function pan_tilt(direction) {
 			"tilt_speed" : tilt_speed,
 			"pan_speed" : pan_speed
 			};
-		 console.log(command);
+		 
 		 ws.send(JSON.stringify(command));
 		 pre_pan_speed = pan_speed;
 		 pre_direction = direction;
@@ -209,7 +209,7 @@ function pan_tilt(direction) {
 			"tilt_speed" : tilt_speed, 
 			"pan_speed" : pan_speed
 		};
-		 console.log(command);
+		
 		 ws.send(JSON.stringify(command));
 		 pre_direction = direction;
 	 } 
