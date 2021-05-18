@@ -18,6 +18,7 @@ class AtemSwitcher(object):
     
     def input(self, video_in):
         self.switcher.setProgramInputVideoSource(0,video_in)
+        sleep(.2)
         return {"message" : "video_input", "value" : str(video_in) }
 
     def get_input(self):
@@ -219,8 +220,6 @@ def server_thread():
     server = WebSocketServer('', 8765, ws_Server)
     print ("Starting Web socket server")
     server.serve_forever()         
-
-
           
 camera = ViscaCamera('192.168.1.28',1259)
 switcher = AtemSwitcher('192.168.1.240')
