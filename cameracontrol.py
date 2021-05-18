@@ -209,7 +209,7 @@ class ws_Server(WebSocket):
 
     def notify_state(self):
         input = switcher.get_input()
-        memory = camera.get_memory()
+        memory = MEMORY
         verboseprint(memory)
         for client in clients:
             try:
@@ -225,10 +225,20 @@ class ws_Server(WebSocket):
                 verboseprint("Something Went Wrong in handle_close: %s" % e)
                
 
+
 def server_thread():
     server = WebSocketServer('', 8765, ws_Server)
     print ("Starting Web socket server")
-    server.serve_forever()           
+    server.serve_forever()         
+
+MEMORY = "not set"
+def camera_rx():
+    global MEMORY  
+    while True:
+        MEMORY = camera.get_memory()
+        verboseprint(MEMORY)
+        
+
           
 camera = ViscaCamera('192.168.1.28',1259)
 switcher = AtemSwitcher('192.168.1.240')
@@ -241,6 +251,9 @@ def main():
     print ("Starting Web socket server")
     ws_thread = Thread(target=server_thread)
     ws_thread.start()
+
+    camera_thread = Thread(target=camera_rx)
+    camera_thread.start()
 
 
 main()
