@@ -136,7 +136,7 @@ class ViscaCamera(object):
             msg = self.socket.recv(512).decode('utf-8')
             verboseprint("RAW Data Received: %s" % msg)
         except:
-            return(False)
+            return("No DATA")
         return(msg)
 
 ########SIMPLE-WEBSOCKETS################################
