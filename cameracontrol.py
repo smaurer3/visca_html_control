@@ -230,14 +230,26 @@ def switcher_state():
         except:
             pass
 
-camera = ViscaCamera('192.168.1.28',1259)
-switcher = AtemSwitcher('192.168.1.240')
+camera = None
+switcher = None
 
 verboseprint = lambda s: None
-
-verboseprint = lambda s: pprint(s)
+#verboseprint = lambda s: pprint(s)
 def main():
+    global camera, switcher
+    while True:
+        try:
+            camera = ViscaCamera('192.168.1.28',1259)
+            break
+        except:
+            pass
 
+    while True:
+        try:
+            switcher = AtemSwitcher('192.168.1.240')
+            break
+        except:
+            pass
     print ("Starting Web socket server")
     ws_thread = Thread(target=server_thread)
     ws_thread.start()
