@@ -129,7 +129,7 @@ class ViscaCamera(object):
 
    def get_memory(self):
         self.send_message(self.CAM_MemoryInq)
-        return self.rx_data()
+        
 
    def rx_data(self):
         print ("here")
@@ -209,6 +209,7 @@ class ws_Server(WebSocket):
 
     def notify_state(self):
         input = switcher.get_input()
+        camera.get_memory()
         memory = MEMORY
         verboseprint(memory)
         for client in clients:
@@ -235,7 +236,7 @@ MEMORY = "not set"
 def camera_rx():
     global MEMORY  
     while True:
-        MEMORY = camera.get_memory()
+        MEMORY = camera.rx_data()
         verboseprint(MEMORY)
         
 
