@@ -38,7 +38,7 @@ function connect(uri) {
 	
 			previous_select.removeClass('btn-danger');
 			previous_select.addClass('btn-light');
-	
+			value = recv['input'].split('input')[1]
 			current_select = $("#switch-" + recv['switcher']["value"]);
 			current_select.removeClass('btn-light');
 			current_select.addClass('btn-danger');

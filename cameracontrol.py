@@ -127,18 +127,6 @@ class ViscaCamera(object):
       message = self.send_message(message_string)
       return  {"message" : "set", "value" : memory_number }
 
-   def get_memory(self):
-        self.send_message(self.CAM_MemoryInq)
-        
-
-   def rx_data(self):
-        print ("here")
-        try:
-            msg = self.socket.recv(512).decode('utf-8')
-            verboseprint("RAW Data Received: %s" % msg)
-        except:
-            return("No DATA")
-        return(msg)
 
 ########SIMPLE-WEBSOCKETS################################
 clients = []
@@ -209,9 +197,6 @@ class ws_Server(WebSocket):
 
     def notify_state(self):
         input = switcher.get_input()
-        camera.get_memory()
-        memory = MEMORY
-        verboseprint(memory)
         for client in clients:
             try:
                 message = json.dumps({
@@ -232,13 +217,6 @@ def server_thread():
     print ("Starting Web socket server")
     server.serve_forever()         
 
-MEMORY = "not set"
-def camera_rx():
-    global MEMORY  
-    while True:
-        MEMORY = camera.rx_data()
-        verboseprint(MEMORY)
-        
 
           
 camera = ViscaCamera('192.168.1.28',1259)
@@ -253,8 +231,6 @@ def main():
     ws_thread = Thread(target=server_thread)
     ws_thread.start()
 
-    camera_thread = Thread(target=camera_rx)
-    camera_thread.start()
 
 
 main()
