@@ -168,7 +168,7 @@ class ws_Server(WebSocket):
                visca_command = getattr(camera,command["type"]) % (str(command["pan_speed"]).zfill(2), str(command["tilt_speed"]).zfill(2))
                verboseprint(visca_command)
                MESSAGE = camera.send_message(visca_command)
-               self.notify_state()
+               notify_state()
                verboseprint(command)
         except Exception as e:
                 print("Something Went Wrong: %s" % e)    
