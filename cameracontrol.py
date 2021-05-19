@@ -11,6 +11,7 @@ from pprint import pprint
 class AtemSwitcher(object):
     def __init__(self, atem_ip):
         print ("Attempting to connect to ATEM Switcher")
+        self.atem_ip= atem_ip
         self.switcher = PyATEMMax.ATEMMax()
         self.switcher.connect(atem_ip)
         self.switcher.waitForConnection()
@@ -26,6 +27,13 @@ class AtemSwitcher(object):
             return self.switcher.programInput[0].videoSource
         except:
             return "input0"
+    
+    def check_connection(self):
+        if not self.switcher.connected():
+            self.switcher.connect(self.atem_ip)
+            self.switcher.waitForConnection()
+            print ("Connected to ATEM Switcher (again)")
+
 
 class ViscaCamera(object):
    def __init__(self, camera_ip, camera_port):
@@ -174,7 +182,7 @@ class ws_Server(WebSocket):
                 print("Something Went Wrong: %s" % e)    
         
     def connected(self):
-        global clearone_connected
+        global clients_connected
         try:
             print(self.address, 'connected')
             clients.append(self)
@@ -184,7 +192,7 @@ class ws_Server(WebSocket):
                 self.remove_me(self)
 
     def handle_close(self):
-        global clearone_connected
+        global clients_connected
         try:
             clients.remove(self)
             print(self.address, 'closed')
@@ -226,10 +234,11 @@ def switcher_state():
     while True:
         sleep(10)
         try:
+            switcher.check_connection()
             notify_state()
         except:
             pass
-
+clients_connected = False
 camera = None
 switcher = None
 
