@@ -13,8 +13,8 @@ class AtemSwitcher(object):
         print ("Attempting to connect to ATEM Switcher")
         self.atem_ip= atem_ip
         self.switcher = PyATEMMax.ATEMMax()
-        self.switcher.connect(atem_ip)
-        self.switcher.waitForConnection()
+       # self.switcher.connect(atem_ip)
+        #self.switcher.waitForConnection()
         print ("Connected to ATEM Switcher")
     
     def input(self, video_in):
@@ -29,11 +29,11 @@ class AtemSwitcher(object):
             return "input0"
     
     def check_connection(self):
-        if not self.switcher.connected():
+        if not self.switcher.connected:
+            print("switcher not connected") 
             self.switcher.connect(self.atem_ip)
-            self.switcher.waitForConnection()
+           # self.switcher.waitForConnection()
             print ("Connected to ATEM Switcher (again)")
-            
 
 
 class ViscaCamera(object):
@@ -185,7 +185,7 @@ class ws_Server(WebSocket):
     def connected(self):
         global clients_connected
         try:
-            # switcher.check_connection()
+            switcher.check_connection()
             print(self.address, 'connected')
             clients.append(self)
             notify_state()
