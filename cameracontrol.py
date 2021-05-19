@@ -13,9 +13,9 @@ class AtemSwitcher(object):
         print ("Attempting to connect to ATEM Switcher")
         self.atem_ip= atem_ip
         self.switcher = PyATEMMax.ATEMMax()
-        # self.switcher.connect(atem_ip)
-        # self.switcher.waitForConnection()
-        # print ("Connected to ATEM Switcher")
+        self.switcher.connect(atem_ip)
+        self.switcher.waitForConnection()
+        print ("Connected to ATEM Switcher")
     
     def input(self, video_in):
         self.switcher.setProgramInputVideoSource(0,video_in)
@@ -185,7 +185,7 @@ class ws_Server(WebSocket):
     def connected(self):
         global clients_connected
         try:
-            switcher.check_connection()
+            # switcher.check_connection()
             print(self.address, 'connected')
             clients.append(self)
             notify_state()
