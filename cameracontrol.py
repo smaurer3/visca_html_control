@@ -143,6 +143,7 @@ SWITCHER = {"not_set": ""}
 PRESET = {"not_set": ""}
 MESSAGE = {"not_set": ""}
 clients_connected = False
+last_input = "input0"
 class ws_Server(WebSocket):
 
     def handle(self):
@@ -232,13 +233,17 @@ def server_thread():
     server.serve_forever()         
 
 def switcher_state():
+    global last_input
     print("Starting Switcher State Thread")
     while True:
-        sleep(1)
+        sleep(.2)
         if clients_connected:
             try:
                 switcher.check_connection()
-                notify_state()
+                input = switcher.get_input()
+                if last_input != input:
+                    notify_state()
+                    last_input = input
             except Exception as e:
                 verboseprint("Something Went Wrong in switcher_state: %s" % e)
             
