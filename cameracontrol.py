@@ -10,12 +10,8 @@ from pprint import pprint
 
 class AtemSwitcher(object):
     def __init__(self, atem_ip):
-        print ("Attempting to connect to ATEM Switcher")
         self.atem_ip= atem_ip
         self.switcher = PyATEMMax.ATEMMax()
-       # self.switcher.connect(atem_ip)
-        #self.switcher.waitForConnection()
-        print ("Connected to ATEM Switcher")
     
     def input(self, video_in):
         self.switcher.setProgramInputVideoSource(0,video_in)
@@ -32,8 +28,8 @@ class AtemSwitcher(object):
         if not self.switcher.connected:
             print("switcher not connected") 
             self.switcher.connect(self.atem_ip)
-           # self.switcher.waitForConnection()
-            print ("Connected to ATEM Switcher (again)")
+            self.switcher.waitForConnection()
+            print ("Connected to ATEM Switcher")
 
 
 class ViscaCamera(object):
@@ -146,7 +142,7 @@ clients = []
 SWITCHER = {"not_set": ""}
 PRESET = {"not_set": ""}
 MESSAGE = {"not_set": ""}
-
+clients_connected = False
 class ws_Server(WebSocket):
 
     def handle(self):
@@ -169,6 +165,7 @@ class ws_Server(WebSocket):
                MESSAGE = camera.send_message(visca_command)
                notify_state()
             elif command["type"] == "switcher":
+               switcher.check_connection()
                verboseprint(command)
                SWITCHER = switcher.input(command["input"])
                notify_state()
@@ -188,6 +185,7 @@ class ws_Server(WebSocket):
             switcher.check_connection()
             print(self.address, 'connected')
             clients.append(self)
+            clients_connected = True
             notify_state()
         except Exception as e:
                 verboseprint("Something Went Wrong in connected: %s" % e)
@@ -198,6 +196,8 @@ class ws_Server(WebSocket):
         try:
             clients.remove(self)
             print(self.address, 'closed')
+            if len(clients) == 0:
+                clients_connected = False
         except Exception as e:
                 verboseprint("Something Went Wrong in handle_close: %s" % e)
                 self.remove_me(self)
@@ -234,12 +234,13 @@ def server_thread():
 def switcher_state():
     print("Starting Switcher State Thread")
     while True:
-        sleep(10)
-        try:
-            switcher.check_connection()
-            notify_state()
-        except Exception as e:
-            verboseprint("Something Went Wrong in switcher_state: %s" % e)
+        sleep(1)
+        if clients_connected:
+            try:
+                switcher.check_connection()
+                notify_state()
+            except Exception as e:
+                verboseprint("Something Went Wrong in switcher_state: %s" % e)
             
 clients_connected = False
 camera = None
