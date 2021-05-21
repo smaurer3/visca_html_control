@@ -41,6 +41,8 @@ class AtemSwitcher(object):
             else:
                 print ("Couldn't Connect to Switcher")
                 return False
+        else:
+            return True
 
 
 class ViscaCamera(object):
