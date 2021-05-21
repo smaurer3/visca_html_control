@@ -259,8 +259,8 @@ clients_connected = False
 camera = None
 switcher = None
 
-verboseprint = lambda s: None
-#verboseprint = lambda s: pprint(s)
+#verboseprint = lambda s: None
+verboseprint = lambda s: pprint(s)
 def main():
     global camera, switcher
     while True:
