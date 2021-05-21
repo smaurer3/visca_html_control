@@ -185,7 +185,6 @@ class ws_Server(WebSocket):
                     SWITCHER = switcher.input(command["input"])
                     input = SWITCHER['value']
                     last_input = SWITCHER['value']
-                    notify_state()
                 else:
                     verboseprint("Can't send command to switcher because it's not connected")
             else:
