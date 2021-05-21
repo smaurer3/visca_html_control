@@ -34,11 +34,13 @@ class AtemSwitcher(object):
         if not self.switcher.connected:
             print("switcher not connected") 
             self.switcher.connect(self.atem_ip)
-            self.switcher.waitForConnection(infinite=False)
+            self.switcher.waitForConnection(timeout=2.5)
             if self.switcher.connected:
                 print ("Connected to ATEM Switcher")
+                return True
             else:
                 print ("Couldn't Connect to Switcher")
+                return False
 
 
 class ViscaCamera(object):
@@ -176,10 +178,14 @@ class ws_Server(WebSocket):
                MESSAGE = camera.send_message(visca_command)
                notify_state()
             elif command["type"] == "switcher":
-               switcher.check_connection()
-               verboseprint(command)
-               SWITCHER = switcher.input(command["input"])
-               notify_state()
+                if switcher.check_connection():
+                    verboseprint(command)
+                    SWITCHER = switcher.input(command["input"])
+                    input = SWITCHER['value']
+                    last_input = SWITCHER['value']
+                    notify_state()
+                else:
+                    verboseprint("Can't send command to switcher because it's not connected")
             else:
                verboseprint(command)
                visca_command = getattr(camera,command["type"]) % (str(command["pan_speed"]).zfill(2), str(command["tilt_speed"]).zfill(2))
@@ -195,7 +201,12 @@ class ws_Server(WebSocket):
         try:
             if len(clients) == 0:
                 switcher = AtemSwitcher('192.168.1.240')
-                switcher.check_connection()
+                i = 0
+                while not switcher.check_connection():
+                    i += 1
+                    sleep(1)
+                    if i > 5:
+                        raise Exception("Failed to connect to video switcher")
             print(self.address, 'connected')
             clients.append(self)
             clients_connected = True
@@ -211,7 +222,6 @@ class ws_Server(WebSocket):
             print(self.address, 'closed')
             if len(clients) == 0:
                 switcher.close_connection()
-                del switcher
                 clients_connected = False
         except Exception as e:
                 verboseprint("Something Went Wrong in handle_close: %s" % e)
