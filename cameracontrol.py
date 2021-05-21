@@ -261,12 +261,13 @@ def server_thread():
 
 def onReceive(params: Dict[Any, Any]) -> None:
     global input, last_input
-    input = (params['switcher'].programInput[0].videoSource.name)
-    verboseprint(f"Received [{params['cmd']}]: {params['cmdName']}")
-    verboseprint("Current Input: %s, Last Input: %s" % (input,last_input))
-    if last_input != input:
-        notify_state()
-        last_input = input
+    if params['cmd'] == "PrgI":
+        input = (params['switcher'].programInput[0].videoSource.name)
+        verboseprint(f"Received [{params['cmd']}]: {params['cmdName']}")
+        verboseprint("Current Input: %s, Last Input: %s" % (input,last_input))
+        if last_input != input:
+            notify_state()
+            last_input = input
         
             
 camera = None
