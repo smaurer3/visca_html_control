@@ -7,11 +7,13 @@ import json
 from threading import Thread
 import PyATEMMax
 from pprint import pprint
+from typing import Dict, Any
 
 class AtemSwitcher(object):
     def __init__(self, atem_ip):
         self.atem_ip= atem_ip
         self.switcher = PyATEMMax.ATEMMax()
+        self.switcher.registerEvent(self.switcher.atem.events.receive, onReceive)
     
     def input(self, video_in):
         self.switcher.setProgramInputVideoSource(0,video_in)
@@ -24,12 +26,19 @@ class AtemSwitcher(object):
         except:
             return "input0"
     
+    def close_connection(self):
+        print ("Diconnecting Switcher")
+        self.switcher.disconnect()
+    
     def check_connection(self):
         if not self.switcher.connected:
             print("switcher not connected") 
             self.switcher.connect(self.atem_ip)
-            self.switcher.waitForConnection()
-            print ("Connected to ATEM Switcher")
+            self.switcher.waitForConnection(infinite=False)
+            if self.switcher.connected:
+                print ("Connected to ATEM Switcher")
+            else:
+                print ("Couldn't Connect to Switcher")
 
 
 class ViscaCamera(object):
@@ -144,6 +153,7 @@ PRESET = {"not_set": ""}
 MESSAGE = {"not_set": ""}
 clients_connected = False
 last_input = "input0"
+input = ""
 class ws_Server(WebSocket):
 
     def handle(self):
@@ -181,9 +191,11 @@ class ws_Server(WebSocket):
                 print("Something Went Wrong: %s" % e)    
         
     def connected(self):
-        global clients_connected
+        global clients_connected, switcher
         try:
-            switcher.check_connection()
+            if len(clients) == 0:
+                switcher = AtemSwitcher('192.168.1.240')
+                switcher.check_connection()
             print(self.address, 'connected')
             clients.append(self)
             clients_connected = True
@@ -198,6 +210,8 @@ class ws_Server(WebSocket):
             clients.remove(self)
             print(self.address, 'closed')
             if len(clients) == 0:
+                switcher.close_connection()
+                del switcher
                 clients_connected = False
         except Exception as e:
                 verboseprint("Something Went Wrong in handle_close: %s" % e)
@@ -211,7 +225,7 @@ class ws_Server(WebSocket):
             verboseprint("Couldn't remove client: %s" % e)
 
 def notify_state():
-    input = switcher.get_input()
+    
     for client in clients:
         try:
             message = json.dumps({
@@ -232,20 +246,14 @@ def server_thread():
     print ("Starting Web socket server")
     server.serve_forever()         
 
-def switcher_state():
-    global last_input
-    print("Starting Switcher State Thread")
-    while True:
-        sleep(.2)
-        if clients_connected:
-            try:
-                switcher.check_connection()
-                input = switcher.get_input()
-                if last_input != input:
-                    notify_state()
-                    last_input = input
-            except Exception as e:
-                verboseprint("Something Went Wrong in switcher_state: %s" % e)
+
+def onReceive(params: Dict[Any, Any]) -> None:
+    global input, last_input
+    input = (params['switcher'].programInput[0].videoSource.name)
+    if last_input != input:
+        notify_state()
+        last_input = input
+        
             
 clients_connected = False
 camera = None
@@ -262,19 +270,11 @@ def main():
         except:
             pass
 
-    while True:
-        try:
-            switcher = AtemSwitcher('192.168.1.240')
-            break
-        except:
-            pass
+    
+    
     print ("Starting Web socket server")
     ws_thread = Thread(target=server_thread)
     ws_thread.start()
-
-    switcher_thread = Thread(target=switcher_state)
-    switcher_thread.start()
-
 
 
 main()
