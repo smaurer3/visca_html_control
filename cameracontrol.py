@@ -199,6 +199,7 @@ class ws_Server(WebSocket):
         
     def connected(self):
         global clients_connected, switcher
+        clients.append(self)
         try:
             if len(clients) == 0:
                 switcher = AtemSwitcher('192.168.1.240')
@@ -209,7 +210,7 @@ class ws_Server(WebSocket):
                     if i > 5:
                         raise Exception("Failed to connect to video switcher")
             print(self.address, 'connected')
-            clients.append(self)
+            
             
             notify_state()
         except Exception as e:
