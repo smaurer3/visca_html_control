@@ -201,7 +201,7 @@ class ws_Server(WebSocket):
         global clients_connected, switcher
         clients.append(self)
         try:
-            if len(clients) == 0:
+            if len(clients) == 1:
                 switcher = AtemSwitcher('192.168.1.240')
                 i = 0
                 while not switcher.check_connection():
