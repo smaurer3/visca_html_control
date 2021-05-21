@@ -211,7 +211,7 @@ class ws_Server(WebSocket):
                         raise Exception("Failed to connect to video switcher")
             print(self.address, 'connected')
             clients.append(self)
-            clients_connected = True
+            
             notify_state()
         except Exception as e:
                 verboseprint("Something Went Wrong in connected: %s" % e)
@@ -224,7 +224,7 @@ class ws_Server(WebSocket):
             print(self.address, 'closed')
             if len(clients) == 0:
                 switcher.close_connection()
-                clients_connected = False
+                
         except Exception as e:
                 verboseprint("Something Went Wrong in handle_close: %s" % e)
                 self.remove_me(self)
@@ -262,12 +262,12 @@ def server_thread():
 def onReceive(params: Dict[Any, Any]) -> None:
     global input, last_input
     input = (params['switcher'].programInput[0].videoSource.name)
+    verboseprint("Current Input: %s, Last Input: %s" % (input,last_input))
     if last_input != input:
         notify_state()
         last_input = input
         
             
-clients_connected = False
 camera = None
 switcher = None
 
