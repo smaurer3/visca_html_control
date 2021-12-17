@@ -202,7 +202,7 @@ class ws_Server(WebSocket):
         clients.append(self)
         try:
             if len(clients) == 1:
-                switcher = AtemSwitcher('192.168.1.240')
+                switcher = AtemSwitcher('192.168.90.240')
                 i = 0
                 while not switcher.check_connection():
                     i += 1
@@ -279,7 +279,7 @@ def main():
     global camera, switcher
     while True:
         try:
-            camera = ViscaCamera('192.168.1.28',1259)
+            camera = ViscaCamera('192.168.90.28',1259)
             break
         except:
             pass
