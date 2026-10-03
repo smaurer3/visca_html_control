@@ -2,7 +2,7 @@
 var ws = null;
 var connected = false;
 var connecting = false;
-var uri = "ws://192.168.1.106:8765";
+var uri = "ws://192.168.10.106:8765";
 var previous_input = "0";
 $(document).ready(function(){
 connect(uri);
